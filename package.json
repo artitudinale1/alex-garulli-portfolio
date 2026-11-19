@@ -1,0 +1,30 @@
+{
+  "name": "alex-portfolio-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "migrate": "node scripts/migrate-contentful.mts",
+    "migrate:dry-run": "node scripts/migrate-contentful.mts --dry-run",
+    "profile:dry-run": "node scripts/update-profile.mts --dry-run",
+    "publish:dry-run": "node scripts/publish-entries.mts --dry-run",
+    "check:migration": "tsc -p tsconfig.scripts.json --noEmit && node --test contentful/*.test.mts"
+  },
+  "dependencies": {
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "contentful-management": "^12.21.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "typescript": "^5"
+  }
+}
