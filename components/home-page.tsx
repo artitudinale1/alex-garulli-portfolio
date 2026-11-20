@@ -1,3 +1,4 @@
+import { HeroArt } from "@/components/hero-art";
 import { formatDateRange, paragraphs, safeEmail } from "@/lib/format";
 import { certifications, skills } from "@/lib/site";
 import type { Portfolio, Project } from "@/lib/contentful/types";
@@ -12,18 +13,19 @@ function ContactLinks({
   github: string;
 }) {
   const links = [
-    email ? { href: `mailto:${email}`, label: "Email" } : null,
-    linkedin ? { href: linkedin, label: "LinkedIn" } : null,
-    github ? { href: github, label: "GitHub" } : null,
+    email ? { href: `mailto:${email}`, label: "Email", download: false } : null,
+    linkedin ? { href: linkedin, label: "LinkedIn", download: false } : null,
+    github ? { href: github, label: "GitHub", download: false } : null,
+    { href: "/Alex_Garulli_CV_2026.pdf", label: "Download CV", download: true },
   ].filter((link) => link !== null);
-
-  if (links.length === 0) return null;
 
   return (
     <ul className="contact-links">
       {links.map((link) => (
         <li key={link.label}>
-          <a href={link.href}>{link.label}</a>
+          <a href={link.href} download={link.download ? "Alex_Garulli_CV_2026.pdf" : undefined}>
+            {link.label}
+          </a>
         </li>
       ))}
     </ul>
@@ -100,12 +102,12 @@ export function HomePage({ portfolio }: { portfolio: Portfolio }) {
       </header>
       <main id="content">
         <section className="hero" aria-labelledby="hero-heading">
-          <div>
+          <div className="hero-identity">
             {profile.location ? <p className="eyebrow">{profile.location}</p> : null}
             <h1 id="hero-heading">{profile.fullName}</h1>
             <p className="lead">{profile.role}</p>
           </div>
-          <div>
+          <div className="hero-main">
             <div className="bio">
               {bio.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
@@ -113,6 +115,7 @@ export function HomePage({ portfolio }: { portfolio: Portfolio }) {
             </div>
             <ContactLinks email={email} linkedin={profile.linkedin} github={profile.github} />
           </div>
+          <HeroArt />
         </section>
 
         <section id="expertise" aria-labelledby="expertise-heading">

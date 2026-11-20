@@ -1,4 +1,5 @@
 import { HomePage, Unavailable } from "@/components/home-page";
+import { PersonJsonLd } from "@/components/person-json-ld";
 import { getPortfolio, PortfolioContentError } from "@/lib/contentful/portfolio";
 
 export default async function Home() {
@@ -10,5 +11,10 @@ export default async function Home() {
   });
 
   if (!portfolio) return <Unavailable />;
-  return <HomePage portfolio={portfolio} />;
+  return (
+    <>
+      <PersonJsonLd profile={portfolio.profile} />
+      <HomePage portfolio={portfolio} />
+    </>
+  );
 }
