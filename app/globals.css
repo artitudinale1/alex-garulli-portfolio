@@ -130,8 +130,8 @@ section {
 .hero-art {
   order: -1;
   align-self: start;
-  width: 10rem;
-  max-width: 170px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 0 0.7rem;
 }
 
@@ -139,6 +139,7 @@ section {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 1024 / 341;
 }
 
 .eyebrow {
@@ -372,6 +373,10 @@ h3 {
     width: 11.5rem;
     max-width: none;
     margin: 0;
+  }
+
+  .hero-art img {
+    aspect-ratio: auto;
   }
 
   .hero-identity {
