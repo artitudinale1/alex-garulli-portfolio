@@ -15,6 +15,16 @@ export function HeroArt() {
     sizes,
     quality: 75,
   });
+  const {
+    props: { srcSet: narrow },
+  } = getImageProps({
+    alt,
+    src: "/brand/header-narrow.jpg",
+    width: 1024,
+    height: 341,
+    sizes: "calc(100vw - 2.5rem)",
+    quality: 75,
+  });
   const { props: mobile } = getImageProps({
     alt,
     src: "/brand/header-mobile.webp",
@@ -28,6 +38,7 @@ export function HeroArt() {
     <figure className="hero-art">
       <picture>
         <source media="(min-width: 1024px)" srcSet={desktop} />
+        <source media="(max-width: 767px)" srcSet={narrow} />
         <img {...mobile} />
       </picture>
     </figure>
