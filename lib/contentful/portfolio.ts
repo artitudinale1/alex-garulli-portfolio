@@ -140,7 +140,7 @@ function mapProjects(items: Array<Partial<Project> | null> | null | undefined): 
 
 export async function getPortfolio(): Promise<Portfolio> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag("contentful-portfolio");
 
   const spaceId = process.env.CONTENTFUL_SPACE_ID;
