@@ -1,11 +1,12 @@
+import type { SiteLocale } from "@/lib/i18n/locales";
 import type { Profile } from "@/lib/contentful/types";
-import { siteUrl } from "@/lib/seo";
+import { canonicalUrl } from "@/lib/seo";
 
 function httpsUrl(value: string) {
   return value.startsWith("https://") ? value : null;
 }
 
-export function PersonJsonLd({ profile }: { profile: Profile }) {
+export function PersonJsonLd({ profile, locale }: { profile: Profile; locale: SiteLocale }) {
   const sameAs = [profile.linkedin, profile.github]
     .map(httpsUrl)
     .filter((url) => url !== null);
@@ -15,7 +16,7 @@ export function PersonJsonLd({ profile }: { profile: Profile }) {
     "@type": "Person",
     name: profile.fullName,
     jobTitle: profile.role,
-    url: `${siteUrl}/`,
+    url: canonicalUrl(locale),
     ...(profile.location
       ? { homeLocation: { "@type": "Place", name: profile.location } }
       : {}),

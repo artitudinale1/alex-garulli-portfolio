@@ -1,42 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { contentfulLocale, type SiteLocale } from "@/lib/i18n/locales";
+import { isUnknownLocaleError, portfolioRequest } from "./query";
 import type { Experience, Portfolio, Profile, Project } from "./types";
-
-const QUERY = `
-  query Portfolio {
-    profileCollection(limit: 5) {
-      items {
-        fullName
-        role
-        bio
-        location
-        email
-        linkedin
-        github
-      }
-    }
-    experienceCollection(limit: 20) {
-      items {
-        company
-        role
-        startDate
-        endDate
-        description
-        technologies
-        displayOrder
-      }
-    }
-    projectCollection(limit: 20) {
-      items {
-        title
-        description
-        technologies
-        repositoryUrl
-        demoUrl
-        displayOrder
-      }
-    }
-  }
-`;
 
 type ContentfulResponse = {
   data?: {
@@ -48,9 +13,12 @@ type ContentfulResponse = {
 };
 
 export class PortfolioContentError extends Error {
-  constructor(message: string) {
+  readonly code?: "unknown-locale";
+
+  constructor(message: string, code?: "unknown-locale") {
     super(message);
     this.name = "PortfolioContentError";
+    this.code = code;
   }
 }
 
@@ -138,11 +106,7 @@ function mapProjects(items: Array<Partial<Project> | null> | null | undefined): 
   return byDisplayOrder(projects);
 }
 
-export async function getPortfolio(): Promise<Portfolio> {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag("contentful-portfolio");
-
+async function requestPortfolio(contentfulCode: string | null): Promise<Portfolio> {
   const spaceId = process.env.CONTENTFUL_SPACE_ID;
   const environment = process.env.CONTENTFUL_ENVIRONMENT;
   const token = process.env.CONTENTFUL_DELIVERY_TOKEN;
@@ -150,6 +114,7 @@ export async function getPortfolio(): Promise<Portfolio> {
     throw new PortfolioContentError("Contentful delivery configuration is incomplete.");
   }
 
+  const request = portfolioRequest(contentfulCode);
   let response: Response;
   try {
     response = await fetch(
@@ -160,7 +125,7 @@ export async function getPortfolio(): Promise<Portfolio> {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query: QUERY }),
+        body: JSON.stringify(request.variables ? request : { query: request.query }),
       },
     );
   } catch {
@@ -173,7 +138,10 @@ export async function getPortfolio(): Promise<Portfolio> {
 
   const body = (await response.json()) as ContentfulResponse;
   if (body.errors?.length) {
-    throw new PortfolioContentError("Contentful returned an error for the portfolio query.");
+    throw new PortfolioContentError(
+      "Contentful returned an error for the portfolio query.",
+      isUnknownLocaleError(body.errors) ? "unknown-locale" : undefined,
+    );
   }
 
   return {
@@ -181,4 +149,23 @@ export async function getPortfolio(): Promise<Portfolio> {
     experiences: mapExperiences(body.data?.experienceCollection?.items),
     projects: mapProjects(body.data?.projectCollection?.items),
   };
+}
+
+export async function getPortfolio(locale: SiteLocale = "en"): Promise<Portfolio> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("contentful-portfolio", `contentful-portfolio-${locale}`);
+
+  try {
+    return await requestPortfolio(contentfulLocale(locale));
+  } catch (error) {
+    if (
+      locale !== "en" &&
+      error instanceof PortfolioContentError &&
+      error.code === "unknown-locale"
+    ) {
+      return requestPortfolio(null);
+    }
+    throw error;
+  }
 }

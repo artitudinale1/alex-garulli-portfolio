@@ -1,9 +1,9 @@
 import { getImageProps } from "next/image";
 
-const alt =
+const defaultAlt =
   "Illustration of Beta and Kamome with cherry blossoms, a torii, Mount Fuji and Tokyo Tower.";
 
-export function HeroArt() {
+export function HeroArt({ alt = defaultAlt }: { alt?: string }) {
   const sizes = "(min-width: 1024px) 380px, (min-width: 768px) 184px, 160px";
   const {
     props: { srcSet: desktop },
@@ -39,7 +39,7 @@ export function HeroArt() {
       <picture>
         <source media="(min-width: 1024px)" srcSet={desktop} />
         <source media="(max-width: 767px)" srcSet={narrow} />
-        <img {...mobile} />
+        <img {...mobile} alt={alt} />
       </picture>
     </figure>
   );
