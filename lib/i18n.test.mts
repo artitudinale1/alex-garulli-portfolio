@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { localizedFields, translationCatalog, type ContentTypeId } from "./i18n/catalog.ts";
+import { localizedFields, translationCatalog, type CatalogItem, type ContentTypeId } from "./i18n/catalog.ts";
+import { applyCatalogTranslations } from "./i18n/fallback.ts";
 import { isUnknownLocaleError, portfolioRequest, PORTFOLIO_QUERY } from "./contentful/query.ts";
+import type { Portfolio } from "./contentful/types.ts";
 import { canonicalUrl, siteDescription, siteTitle } from "./seo.ts";
 import { messagesFor } from "./i18n/messages.ts";
 import { contentfulLocale, localeChoices } from "./i18n/locales.ts";
@@ -119,5 +121,127 @@ describe("translation plan", () => {
   it("recognises an unknown Contentful locale error", () => {
     assert.equal(isUnknownLocaleError([{ message: "Unknown locale: it-IT" }]), true);
     assert.equal(isUnknownLocaleError([{ message: "Contentful request failed" }]), false);
+  });
+});
+
+function catalogItems(contentType: ContentTypeId): CatalogItem[] {
+  return translationCatalog.filter((item) => item.contentType === contentType);
+}
+
+function englishPortfolio(): Portfolio {
+  const profile = catalogItems("profile")[0];
+  return {
+    profile: {
+      fullName: profile.match.fullName,
+      role: profile.source.role,
+      bio: profile.source.bio,
+      location: "London",
+      email: "alex@example.com",
+      linkedin: "https://www.linkedin.com/in/example",
+      github: "https://github.com/example",
+    },
+    experiences: catalogItems("experience").map((item, index) => ({
+      company: item.match.company,
+      role: item.source.role,
+      startDate: `${item.match.startDate}T00:00:00.000Z`,
+      endDate: index === 0 ? null : "2023-06-01",
+      description: item.source.description,
+      technologies: ["TypeScript"],
+      displayOrder: index,
+    })),
+    projects: catalogItems("project").map((item, index) => ({
+      title: item.match.title,
+      description: item.source.description,
+      technologies: ["React"],
+      repositoryUrl: "https://github.com/example/project",
+      demoUrl: null,
+      displayOrder: index,
+    })),
+  };
+}
+
+describe("catalog translation fallback", () => {
+  it("leaves the English portfolio untouched", () => {
+    const portfolio = englishPortfolio();
+    assert.equal(applyCatalogTranslations(portfolio, "en"), portfolio);
+  });
+
+  it("keeps the Contentful Italian profile and translates experience and projects", () => {
+    const portfolio = englishPortfolio();
+    portfolio.profile = { ...portfolio.profile, role: "Ruolo pubblicato", bio: "Biografia pubblicata" };
+    const translated = applyCatalogTranslations(portfolio, "it");
+
+    assert.equal(translated.profile.role, "Ruolo pubblicato");
+    assert.equal(translated.profile.bio, "Biografia pubblicata");
+    assert.equal(translated.profile.location, "London");
+    assert.equal(translated.experiences.length, 6);
+    assert.equal(translated.projects.length, 6);
+    for (const experience of translated.experiences) {
+      const item = catalogItems("experience").find((entry) => entry.match.company === experience.company);
+      assert.ok(item);
+      assert.equal(experience.role, item.translations["it-IT"].role);
+      assert.equal(experience.description, item.translations["it-IT"].description);
+      assert.equal(experience.company, item.match.company);
+      assert.equal(experience.startDate.endsWith("T00:00:00.000Z"), true);
+      assert.deepEqual(experience.technologies, ["TypeScript"]);
+    }
+    for (const project of translated.projects) {
+      const item = catalogItems("project").find((entry) => entry.match.title === project.title);
+      assert.ok(item);
+      assert.equal(project.title, item.match.title);
+      assert.equal(project.description, item.translations["it-IT"].description);
+      assert.equal(project.repositoryUrl, "https://github.com/example/project");
+      assert.equal(project.demoUrl, null);
+      assert.deepEqual(project.technologies, ["React"]);
+    }
+  });
+
+  it("translates the Japanese profile, experiences and projects from English content", () => {
+    const portfolio = englishPortfolio();
+    const translated = applyCatalogTranslations(portfolio, "ja");
+    const profile = catalogItems("profile")[0];
+
+    assert.equal(translated.profile.fullName, "Alex Garulli");
+    assert.equal(translated.profile.role, profile.translations["ja-JP"].role);
+    assert.equal(translated.profile.bio, profile.translations["ja-JP"].bio);
+    assert.equal(translated.profile.email, portfolio.profile.email);
+    assert.equal(translated.profile.github, portfolio.profile.github);
+    assert.equal(
+      translated.experiences.every(
+        (experience) =>
+          experience.role ===
+          catalogItems("experience").find((item) => item.match.company === experience.company)?.translations["ja-JP"]
+            .role,
+      ),
+      true,
+    );
+    assert.equal(
+      translated.projects.every(
+        (project) =>
+          project.description ===
+          catalogItems("project").find((item) => item.match.title === project.title)?.translations["ja-JP"]
+            .description,
+      ),
+      true,
+    );
+    assert.deepEqual(
+      translated.projects.map((project) => project.title),
+      portfolio.projects.map((project) => project.title),
+    );
+  });
+
+  it("does not replace drifted prose or ambiguous entries", () => {
+    const portfolio = englishPortfolio();
+    portfolio.experiences[0] = { ...portfolio.experiences[0], description: "Changed English description" };
+    portfolio.projects[1] = { ...portfolio.projects[1], title: "Untitled draft" };
+    portfolio.experiences.push({ ...portfolio.experiences[2], displayOrder: 99 });
+
+    const translated = applyCatalogTranslations(portfolio, "it");
+    assert.equal(translated.experiences[0].description, "Changed English description");
+    assert.equal(translated.experiences[0].role, catalogItems("experience")[0].translations["it-IT"].role);
+    assert.equal(translated.projects[1].title, "Untitled draft");
+    assert.equal(translated.projects[1].description, portfolio.projects[1].description);
+    assert.equal(translated.experiences[2].role, portfolio.experiences[2].role);
+    assert.equal(translated.experiences.at(-1)?.role, portfolio.experiences[2].role);
   });
 });
