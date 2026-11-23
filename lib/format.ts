@@ -1,16 +1,21 @@
-export function formatMonthYear(value: string): string {
+export function formatMonthYear(value: string, locale = "en-GB"): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat(locale, {
     month: "short",
     year: "numeric",
     timeZone: "UTC",
   }).format(date);
 }
 
-export function formatDateRange(startDate: string, endDate: string | null): string {
-  const start = formatMonthYear(startDate);
-  return endDate ? `${start} – ${formatMonthYear(endDate)}` : `${start} – Present`;
+export function formatDateRange(
+  startDate: string,
+  endDate: string | null,
+  present = "Present",
+  locale = "en-GB",
+): string {
+  const start = formatMonthYear(startDate, locale);
+  return endDate ? `${start} – ${formatMonthYear(endDate, locale)}` : `${start} – ${present}`;
 }
 
 export function paragraphs(value: string): string[] {

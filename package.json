@@ -11,7 +11,9 @@
     "migrate:dry-run": "node scripts/migrate-contentful.mts --dry-run",
     "profile:dry-run": "node scripts/update-profile.mts --dry-run",
     "publish:dry-run": "node scripts/publish-entries.mts --dry-run",
-    "check:migration": "tsc -p tsconfig.scripts.json --noEmit && node --test contentful/*.test.mts"
+    "check:migration": "tsc -p tsconfig.scripts.json --noEmit && node --test contentful/*.test.mts",
+    "i18n:dry-run": "node i18n/apply-translations.mts",
+    "i18n:apply": "node i18n/apply-translations.mts --apply"
   },
   "dependencies": {
     "next": "16.4.6",

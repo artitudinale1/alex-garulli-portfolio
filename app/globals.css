@@ -28,6 +28,14 @@ body {
   line-height: 1.6;
 }
 
+html[lang="ja"] body,
+html[lang="ja"] h1,
+html[lang="ja"] h2,
+html[lang="ja"] h3,
+html[lang="ja"] .wordmark {
+  font-family: var(--font-ja), var(--font-sans), sans-serif;
+}
+
 a {
   color: var(--accent);
   text-decoration-thickness: 1px;
@@ -97,6 +105,26 @@ a:hover {
 }
 
 .site-header nav a:hover {
+  color: var(--ink);
+}
+
+.site-header-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+}
+
+.language-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.language-switcher a[aria-current="page"] {
   color: var(--ink);
 }
 
