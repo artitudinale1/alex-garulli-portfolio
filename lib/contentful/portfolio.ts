@@ -1,4 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { applyCatalogTranslations } from "@/lib/i18n/fallback";
 import { contentfulLocale, type SiteLocale } from "@/lib/i18n/locales";
 import { isUnknownLocaleError, portfolioRequest } from "./query";
 import type { Experience, Portfolio, Profile, Project } from "./types";
@@ -157,14 +158,14 @@ export async function getPortfolio(locale: SiteLocale = "en"): Promise<Portfolio
   cacheTag("contentful-portfolio", `contentful-portfolio-${locale}`);
 
   try {
-    return await requestPortfolio(contentfulLocale(locale));
+    return applyCatalogTranslations(await requestPortfolio(contentfulLocale(locale)), locale);
   } catch (error) {
     if (
       locale !== "en" &&
       error instanceof PortfolioContentError &&
       error.code === "unknown-locale"
     ) {
-      return requestPortfolio(null);
+      return applyCatalogTranslations(await requestPortfolio(null), locale);
     }
     throw error;
   }
