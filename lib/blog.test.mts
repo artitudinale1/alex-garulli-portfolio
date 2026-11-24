@@ -48,6 +48,16 @@ describe("blog markdown", () => {
     assert.equal(html.includes("javascript:"), false);
     assert.match(html, /<ruby>猫<rt>ねこ<\/rt><\/ruby>/);
   });
+
+  it("places an image written on a heading line after the heading", () => {
+    const html = renderMarkdown(
+      "# Hello from my blog! ![Kamome](https://res.cloudinary.com/demo/image/upload/v1/alex-blog/cat.jpg)\n\n<ruby>猫<rt>ねこ</rt></ruby>",
+    );
+    assert.match(html, /^<h2>Hello from my blog!<\/h2><img /);
+    assert.equal(/<h2>[^<]*<img/.test(html), false);
+    assert.match(html, /alt="Kamome"/);
+    assert.match(html, /<ruby>猫<rt>ねこ<\/rt><\/ruby>/);
+  });
 });
 
 describe("blog posts", () => {
