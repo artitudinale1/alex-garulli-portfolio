@@ -1,5 +1,5 @@
 import { editorGate } from "@/lib/blog/editor-api";
-import { cloudinaryConfigured, ImageUploadError, uploadBlogImage } from "@/lib/blog/cloudinary";
+import { cloudinaryConfigured, ImageUploadError, unexpectedUploadLog, uploadBlogImage } from "@/lib/blog/cloudinary";
 import { imageUploadError, MAX_IMAGE_BYTES } from "@/lib/blog/images";
 
 export async function POST(request: Request) {
@@ -35,6 +35,7 @@ export async function POST(request: Request) {
     const url = await uploadBlogImage(bytes);
     return Response.json({ url });
   } catch (error) {
+    if (!(error instanceof ImageUploadError)) console.error("Blog image upload failed", unexpectedUploadLog(error));
     const message = error instanceof ImageUploadError ? error.message : "The image could not be uploaded.";
     return Response.json({ error: message }, { status: 502 });
   }
