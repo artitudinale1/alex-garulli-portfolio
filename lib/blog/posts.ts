@@ -14,6 +14,7 @@ const POSTS_QUERY = `
       category
       tags
       publishedAt
+      coverImageUrl
     }
   }
 `;

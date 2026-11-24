@@ -570,12 +570,20 @@ h3 {
 }
 
 .editor-list button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
   padding: 0.85rem 1rem;
   border: 1px solid var(--line);
   border-radius: 1rem;
   background: var(--card);
   text-align: left;
   cursor: pointer;
+}
+
+.editor-list .eyebrow {
+  margin: 0;
 }
 
 .editor-list li + li {
@@ -645,6 +653,79 @@ h3 {
 .editor-hint,
 .editor-hint code {
   color: var(--muted);
+}
+
+.blog-cover-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 0.85rem;
+}
+
+.blog-cover-frame img {
+  object-fit: cover;
+}
+
+article > .blog-cover-frame {
+  aspect-ratio: 3 / 2;
+  margin: 0 0 1.25rem;
+}
+
+.blog-content img,
+.blog-external-cover {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.8rem;
+  margin: 0 0 1.25rem;
+}
+
+.editor-cover-field {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.editor-cover-field .blog-cover-frame {
+  width: min(100%, 16rem);
+  margin-bottom: 0.75rem;
+}
+
+.editor-upload {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.editor-upload label:not(.editor-file-button) {
+  flex: 1 1 12rem;
+}
+
+.editor-file-button,
+.editor-upload button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font: inherit;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.55rem 0.95rem;
+  cursor: pointer;
+}
+
+.editor-form .editor-file {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
 @media (min-width: 900px) {

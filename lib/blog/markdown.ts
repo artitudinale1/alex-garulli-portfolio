@@ -1,3 +1,5 @@
+import { cloudinaryDisplayUrl, safeHttpsUrl } from "./images.ts";
+
 const ESCAPE_HTML: Record<string, string> = {
   "&": "&amp;",
   "<": "&lt;",
@@ -35,8 +37,23 @@ function renderInline(source: string): string {
     codes.push(`<code>${escapeHtml(code)}</code>`);
     return token;
   });
+  const images: string[] = [];
+  const withoutImages = withoutCode.replace(/!\[([^\]]*)\]\(((?:[^()\s]|\([^()\s]*\))+)\)/g, (_match, alt: string, href: string) => {
+    const token = `\u0000IMG${images.length}\u0000`;
+    const url = safeHttpsUrl(href);
+    if (!url) {
+      images.push(escapeHtml(alt));
+      return token;
+    }
+    const large = cloudinaryDisplayUrl(url, 1600);
+    const medium = cloudinaryDisplayUrl(url, 800);
+    const srcSet =
+      large === url ? "" : ` srcset="${escapeHtml(medium)} 800w, ${escapeHtml(large)} 1600w" sizes="(min-width: 768px) 42rem, 100vw"`;
+    images.push(`<img src="${escapeHtml(large)}"${srcSet} alt="${escapeHtml(alt)}" loading="lazy" decoding="async">`);
+    return token;
+  });
 
-  let html = escapeHtml(withoutCode);
+  let html = escapeHtml(withoutImages);
   html = html.replace(/\[([^\]]+)\]\(((?:[^()\s]|\([^()\s]*\))+)\)/g, (_match, label: string, href: string) => {
     const url = safeUrl(href);
     if (!url) return label;
@@ -44,6 +61,7 @@ function renderInline(source: string): string {
   });
   html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   html = html.replace(/(^|[\s(])\*([^*\n]+)\*(?=$|[\s).,!?:;])/g, "$1<em>$2</em>");
+  html = html.replace(/\u0000IMG(\d+)\u0000/g, (_match, index: string) => images[Number(index)] ?? "");
   html = html.replace(/\u0000CODE(\d+)\u0000/g, (_match, index: string) => codes[Number(index)] ?? "");
   return html.replace(/\u0000RUBY(\d+)\u0000/g, (_match, index: string) => rubies[Number(index)] ?? "");
 }

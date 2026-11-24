@@ -123,6 +123,8 @@ The value must be at least 32 characters. `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`
 
 For local sign-in, also allow `http://localhost:3000/api/auth/callback/github`. Render must list `4562699` in `ADMIN_GITHUB_IDS`.
 
+Image uploads are available only after that sign-in. Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` on the server. They are already configured for Vercel Production. Do not prefix them with `NEXT_PUBLIC_`. Uploaded files are stored in the Cloudinary folder `alex-blog`.
+
 ## Latest dry-run
 
 The 6 experience entries, 6 project entries, and the profile entry are published in space `i2d1ui3ps58s`, environment `master`. The Content Delivery API returns all 13 entries.

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { publishArticle, saveDraft, unpublishArticle, type EditorActionResult } from "@/lib/blog/editor-actions";
 import { parseEditorInput, type EditorPost, type EditorStatus } from "@/lib/blog/editor";
 import { renderMarkdown } from "@/lib/blog/markdown";
 import { blogCategories, categoryLabel, type BlogCategory } from "@/lib/blog/schema";
 import { formatMonthYear } from "@/lib/format";
+import { CoverImage } from "@/components/blog-cover";
 
 type FormState = {
   id: string | null;
@@ -17,6 +18,7 @@ type FormState = {
   category: BlogCategory;
   status: EditorStatus | "NEW";
   publishedAt: string | null;
+  coverImageUrl: string | null;
 };
 
 const emptyForm: FormState = {
@@ -28,6 +30,7 @@ const emptyForm: FormState = {
   category: "CODE",
   status: "NEW",
   publishedAt: null,
+  coverImageUrl: null,
 };
 
 function fromPost(post: EditorPost): FormState {
@@ -40,6 +43,7 @@ function fromPost(post: EditorPost): FormState {
     category: post.category,
     status: post.status,
     publishedAt: post.publishedAt,
+    coverImageUrl: post.coverImageUrl,
   };
 }
 
@@ -52,6 +56,9 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
   const [error, setError] = useState<string | null>(initialError);
   const [pending, startTransition] = useTransition();
   const [pendingLabel, setPendingLabel] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<"cover" | "inline" | null>(null);
+  const [imageAlt, setImageAlt] = useState("");
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   function applyPost(post: EditorPost) {
     setForm(fromPost(post));
@@ -74,6 +81,60 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
   function update(patch: Partial<FormState>) {
     setForm((current) => ({ ...current, ...patch }));
     setNotice(null);
+  }
+
+  async function uploadFile(file: File): Promise<string | null> {
+    const body = new FormData();
+    body.append("file", file);
+    const response = await fetch("/api/admin/blog/images", { method: "POST", body });
+    const payload = (await response.json().catch(() => null)) as { url?: unknown; error?: unknown } | null;
+    if (!response.ok || typeof payload?.url !== "string" || !payload.url.startsWith("https://")) {
+      setError(typeof payload?.error === "string" ? payload.error : "The image could not be uploaded.");
+      return null;
+    }
+    return payload.url;
+  }
+
+  async function onCoverSelected(file: File | null) {
+    if (!file) return;
+    setError(null);
+    setNotice(null);
+    setUploading("cover");
+    try {
+      const url = await uploadFile(file);
+      if (url) update({ coverImageUrl: url });
+    } catch {
+      setError("The image could not be uploaded.");
+    } finally {
+      setUploading(null);
+    }
+  }
+
+  async function onInlineSelected(file: File | null) {
+    if (!file) return;
+    const alt = imageAlt.replace(/[\[\]]/g, "").replace(/\s+/g, " ").trim();
+    if (!alt) {
+      setError("Add a short description before uploading an image into the article.");
+      return;
+    }
+    setError(null);
+    setNotice(null);
+    setUploading("inline");
+    try {
+      const url = await uploadFile(file);
+      if (!url) return;
+      const markdown = `![${alt}](${url})`;
+      const area = contentRef.current;
+      const start = area?.selectionStart ?? form.contentMarkdown.length;
+      const end = area?.selectionEnd ?? form.contentMarkdown.length;
+      const next = `${form.contentMarkdown.slice(0, start)}${markdown}${form.contentMarkdown.slice(end)}`;
+      update({ contentMarkdown: next });
+      setImageAlt("");
+    } catch {
+      setError("The image could not be uploaded.");
+    } finally {
+      setUploading(null);
+    }
   }
 
   function run(action: "draft" | "publish" | "unpublish") {
@@ -141,6 +202,7 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
           {form.publishedAt ? ` · ${formatMonthYear(form.publishedAt)}` : ""}
         </p>
         <h1>{form.title.trim() || "Blog editor"}</h1>
+        {uploading ? <p role="status">Uploading image. This stays on the server.</p> : null}
         {pendingLabel ? (
           <p role="status">
             {pendingLabel}. If the API is asleep, this can take about a minute.
@@ -149,7 +211,10 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
         {notice ? <p className="editor-notice" role="status">{notice}</p> : null}
         {error ? <p className="editor-error" role="alert">{error}</p> : null}
         {preview ? (
-          <div className="blog-content" dangerouslySetInnerHTML={{ __html: renderMarkdown(form.contentMarkdown || "Nothing to preview yet.") }} />
+          <>
+            <CoverImage url={form.coverImageUrl} alt={form.title.trim() || "Cover preview"} sizes="(min-width: 768px) 42rem, 100vw" />
+            <div className="blog-content" dangerouslySetInnerHTML={{ __html: renderMarkdown(form.contentMarkdown || "Nothing to preview yet.") }} />
+          </>
         ) : (
           <>
             <label>
@@ -174,10 +239,62 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
               Excerpt
               <textarea value={form.excerpt} maxLength={300} rows={3} onChange={(event) => update({ excerpt: event.target.value })} required />
             </label>
+            <fieldset className="editor-cover-field">
+              <legend>Cover image</legend>
+              <CoverImage url={form.coverImageUrl} alt={form.title.trim() || "Cover preview"} sizes="16rem" />
+              <div className="editor-upload">
+                <label className="editor-file-button">
+                  {uploading === "cover" ? "Uploading cover" : form.coverImageUrl ? "Replace cover" : "Upload cover"}
+                  <input
+                    className="editor-file"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    disabled={pending || uploading !== null}
+                    onChange={(event) => {
+                      const file = event.target.files?.[0] ?? null;
+                      event.target.value = "";
+                      void onCoverSelected(file);
+                    }}
+                  />
+                </label>
+                {form.coverImageUrl ? (
+                  <button type="button" data-secondary disabled={pending || uploading !== null} onClick={() => update({ coverImageUrl: null })}>
+                    Remove cover
+                  </button>
+                ) : null}
+              </div>
+            </fieldset>
             <label>
               Content
-              <textarea value={form.contentMarkdown} maxLength={100000} rows={16} onChange={(event) => update({ contentMarkdown: event.target.value })} required />
+              <textarea
+                ref={contentRef}
+                value={form.contentMarkdown}
+                maxLength={100000}
+                rows={16}
+                onChange={(event) => update({ contentMarkdown: event.target.value })}
+                required
+              />
             </label>
+            <div className="editor-upload">
+              <label>
+                Image description
+                <input value={imageAlt} maxLength={120} onChange={(event) => setImageAlt(event.target.value)} />
+              </label>
+              <label className="editor-file-button">
+                {uploading === "inline" ? "Uploading image" : "Upload image"}
+                <input
+                  className="editor-file"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  disabled={pending || uploading !== null}
+                  onChange={(event) => {
+                    const file = event.target.files?.[0] ?? null;
+                    event.target.value = "";
+                    void onInlineSelected(file);
+                  }}
+                />
+              </label>
+            </div>
             <p className="editor-hint">
               Furigana stays in the Markdown, for example <code>{"<ruby>猫<rt>ねこ</rt></ruby>"}</code>.
             </p>
