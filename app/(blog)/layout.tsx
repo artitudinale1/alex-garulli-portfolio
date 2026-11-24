@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { documentClassName } from "@/components/document";
 import { japanese } from "@/lib/fonts";
 import { siteUrl } from "@/lib/seo";
@@ -16,7 +17,10 @@ export const metadata: Metadata = {
 export default function BlogLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${documentClassName("en")} ${japanese.variable}`}>
-      <body className="blog-page">{children}</body>
+      <body className="blog-page">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
