@@ -80,13 +80,13 @@ export function BlogArticle({ post }: { post: BlogPost }) {
       </a>
       <BlogHeader current={false} />
       <main id="content" className="blog-main">
-        <article>
+        <article className="blog-article">
           <p className="eyebrow">
             {categoryLabel(post.category)} · {formatMonthYear(post.publishedAt)}
           </p>
           <h1>{post.title}</h1>
           <p className="lead">{post.excerpt}</p>
-          <CoverImage url={post.coverImageUrl} alt={post.title} sizes="(min-width: 768px) 42rem, calc(100vw - 2.5rem)" />
+          <CoverImage url={post.coverImageUrl} alt={post.title} sizes="(min-width: 768px) 46rem, calc(100vw - 2.5rem)" />
           <div className="blog-content" dangerouslySetInnerHTML={{ __html: renderMarkdown(post.contentMarkdown) }} />
           {post.tags.length > 0 ? (
             <ul className="technologies">

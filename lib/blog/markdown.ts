@@ -48,7 +48,9 @@ function renderInline(source: string): string {
     const large = cloudinaryDisplayUrl(url, 1600);
     const medium = cloudinaryDisplayUrl(url, 800);
     const srcSet =
-      large === url ? "" : ` srcset="${escapeHtml(medium)} 800w, ${escapeHtml(large)} 1600w" sizes="(min-width: 768px) 42rem, 100vw"`;
+      large === url
+        ? ""
+        : ` srcset="${escapeHtml(medium)} 800w, ${escapeHtml(large)} 1600w" sizes="(min-width: 768px) 46rem, calc(100vw - 2.5rem)"`;
     images.push(`<img src="${escapeHtml(large)}"${srcSet} alt="${escapeHtml(alt)}" loading="lazy" decoding="async">`);
     return token;
   });
@@ -64,6 +66,21 @@ function renderInline(source: string): string {
   html = html.replace(/\u0000IMG(\d+)\u0000/g, (_match, index: string) => images[Number(index)] ?? "");
   html = html.replace(/\u0000CODE(\d+)\u0000/g, (_match, index: string) => codes[Number(index)] ?? "");
   return html.replace(/\u0000RUBY(\d+)\u0000/g, (_match, index: string) => rubies[Number(index)] ?? "");
+}
+
+function headingBlocks(level: number, inner: string): string[] {
+  const images: string[] = [];
+  const text = inner
+    .replace(/<img\b[^>]*>/g, (image) => {
+      images.push(image);
+      return "";
+    })
+    .replace(/\s+/g, " ")
+    .trim();
+  const blocks: string[] = [];
+  if (text) blocks.push(`<h${level}>${text}</h${level}>`);
+  blocks.push(...images);
+  return blocks;
 }
 
 function isBlockStart(line: string): boolean {
@@ -103,7 +120,7 @@ export function renderMarkdown(markdown: string): string {
     const heading = /^(#{1,3}) (.+)$/.exec(line);
     if (heading) {
       const level = heading[1].length + 1;
-      blocks.push(`<h${level}>${renderInline(heading[2])}</h${level}>`);
+      blocks.push(...headingBlocks(level, renderInline(heading[2])));
       index += 1;
       continue;
     }
