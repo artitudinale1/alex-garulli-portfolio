@@ -107,6 +107,22 @@ Run the dry-run again before applying.
 - A content type whose fields differ is reported as a conflict and is not modified.
 - The same command can be repeated. After a successful apply, the next dry-run should report no further content-type writes.
 
+## Blog editor
+
+The private editor is at `/admin/blog`. It is not linked from the public portfolio. GitHub sign-in uses Auth.js, and only GitHub numeric user `4562699` can open the editor. The server signs a five-minute token for the blog API. The browser never receives `AUTH_SECRET`, `EDITOR_AUTH_SECRET`, or that token.
+
+Generate a session secret and store it as `AUTH_SECRET` in the Vercel project. Do not commit it.
+
+```bash
+openssl rand -base64 32
+```
+
+The value must be at least 32 characters. `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`, and `EDITOR_AUTH_SECRET` are already server environment variables. `EDITOR_AUTH_SECRET` must be the same value configured on Render, and it must be at least 32 characters. The GitHub OAuth app needs this callback URL:
+
+`https://www.alexgarulli.org.uk/api/auth/callback/github`
+
+For local sign-in, also allow `http://localhost:3000/api/auth/callback/github`. Render must list `4562699` in `ADMIN_GITHUB_IDS`.
+
 ## Latest dry-run
 
 The 6 experience entries, 6 project entries, and the profile entry are published in space `i2d1ui3ps58s`, environment `master`. The Content Delivery API returns all 13 entries.
