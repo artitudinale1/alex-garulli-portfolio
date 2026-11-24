@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import { describeCloudinaryUpload, signCloudinaryParams, unexpectedUploadLog, uploadBlogImage } from "./blog/cloudinary.ts";
 import {
   IMAGE_UPLOAD_MESSAGE,
   MAX_IMAGE_BYTES,
+  cloudinaryCoverLoader,
   cloudinaryDisplayUrl,
   detectImageKind,
   imageUploadError,
@@ -49,6 +51,19 @@ describe("blog images", () => {
       "https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,w_800/v1/alex-blog/cat.jpg",
     );
     assert.equal(cloudinaryDisplayUrl("https://example.com/cat.jpg", 800), "https://example.com/cat.jpg");
+  });
+
+  it("optimises a published Cloudinary cover without leaving the client cover component", () => {
+    const cover = "https://res.cloudinary.com/demo/image/upload/v1795527346/alex-blog/jeqn61ct3f9zwevfwqfa.jpg";
+    assert.equal(
+      cloudinaryCoverLoader({ src: cover, width: 800 }),
+      "https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,w_800/v1795527346/alex-blog/jeqn61ct3f9zwevfwqfa.jpg",
+    );
+    const coverSource = readFileSync(new URL("../components/blog-cover.tsx", import.meta.url), "utf8");
+    const pageSource = readFileSync(new URL("../components/blog-pages.tsx", import.meta.url), "utf8");
+    assert.match(coverSource, /^"use client";/);
+    assert.match(coverSource, /loader=\{cloudinaryCoverLoader\}/);
+    assert.equal(pageSource.includes("loader"), false);
   });
 
   it("records a Cloudinary rejection without the API secret or signature", () => {

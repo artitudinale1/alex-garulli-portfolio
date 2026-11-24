@@ -104,3 +104,7 @@ export function cloudinaryDisplayUrl(value: string, width: number): string {
   url.pathname = `${match[1]}/f_auto,q_auto,w_${safeWidth}/${rest}`;
   return url.toString();
 }
+
+export function cloudinaryCoverLoader({ src, width }: { src: string; width: number }): string {
+  return cloudinaryDisplayUrl(src, width);
+}

@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import { cloudinaryDisplayUrl, parseStoredImageUrl } from "@/lib/blog/images";
+import { cloudinaryCoverLoader, parseStoredImageUrl } from "@/lib/blog/images";
 
 export function CoverImage({ url, alt, sizes }: { url: string | null; alt: string; sizes: string }) {
   const stored = url ? parseStoredImageUrl(url) : null;
@@ -8,7 +10,7 @@ export function CoverImage({ url, alt, sizes }: { url: string | null; alt: strin
   if (hostname === "res.cloudinary.com") {
     return (
       <span className="blog-cover-frame">
-        <Image loader={({ src, width }) => cloudinaryDisplayUrl(src, width)} src={stored} alt={alt} fill sizes={sizes} />
+        <Image loader={cloudinaryCoverLoader} src={stored} alt={alt} fill sizes={sizes} />
       </span>
     );
   }
