@@ -1,3 +1,5 @@
+import { parseStoredImageUrl } from "./images.ts";
+
 export const blogCategories = ["CODE", "JAPANESE", "CATS", "COOKING"] as const;
 
 export type BlogCategory = (typeof blogCategories)[number];
@@ -11,6 +13,7 @@ export type BlogPost = {
   category: BlogCategory;
   tags: string[];
   publishedAt: string;
+  coverImageUrl: string | null;
 };
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -53,6 +56,7 @@ export function parsePost(value: unknown): BlogPost | null {
     category: postCategory,
     tags: record.tags.map((tag) => tag.trim()),
     publishedAt,
+    coverImageUrl: typeof record.coverImageUrl === "string" ? parseStoredImageUrl(record.coverImageUrl) : null,
   };
 }
 

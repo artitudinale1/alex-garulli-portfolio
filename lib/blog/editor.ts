@@ -1,3 +1,4 @@
+import { parseStoredImageUrl } from "./images.ts";
 import { blogCategories, isBlogSlug, type BlogCategory } from "./schema.ts";
 
 export type EditorStatus = "DRAFT" | "PUBLISHED";
@@ -12,6 +13,7 @@ export type EditorPost = {
   tags: string[];
   status: EditorStatus;
   publishedAt: string | null;
+  coverImageUrl: string | null;
 };
 
 export type PostDraft = {
@@ -20,6 +22,7 @@ export type PostDraft = {
   excerpt: string;
   contentMarkdown: string;
   category: BlogCategory;
+  coverImageUrl: string | null;
 };
 
 const OBJECT_ID = /^[a-f0-9]{24}$/i;
@@ -48,7 +51,14 @@ export function validateDraft(input: Record<string, unknown>): { ok: true; value
   if (typeof contentMarkdown !== "string") return { ok: false, message: contentMarkdown.message };
   const category = blogCategories.find((item) => item === input.category);
   if (!category) return { ok: false, message: "Category is invalid." };
-  return { ok: true, value: { title, slug, excerpt, contentMarkdown, category } };
+  let coverImageUrl: string | null = null;
+  if (input.coverImageUrl != null && input.coverImageUrl !== "") {
+    if (typeof input.coverImageUrl !== "string") return { ok: false, message: "Cover image must be an https image URL." };
+    const cover = parseStoredImageUrl(input.coverImageUrl);
+    if (!cover) return { ok: false, message: "Cover image must be an https image URL." };
+    coverImageUrl = cover;
+  }
+  return { ok: true, value: { title, slug, excerpt, contentMarkdown, category, coverImageUrl } };
 }
 
 export function parseEditorInput(
@@ -75,6 +85,7 @@ export function toPostInput(draft: PostDraft): PostDraft {
     excerpt: draft.excerpt,
     contentMarkdown: draft.contentMarkdown,
     category: draft.category,
+    coverImageUrl: draft.coverImageUrl,
   };
 }
 
@@ -83,7 +94,8 @@ export function parseEditorPost(value: unknown): EditorPost | null {
   const record = value as Record<string, unknown>;
   const id = typeof record.id === "string" ? record.id : "";
   if (!isEditorPostId(id)) return null;
-  const draft = validateDraft(record);
+  const coverImageUrl = typeof record.coverImageUrl === "string" ? parseStoredImageUrl(record.coverImageUrl) : null;
+  const draft = validateDraft({ ...record, coverImageUrl });
   if (!draft.ok) return null;
   if (record.status !== "DRAFT" && record.status !== "PUBLISHED") return null;
   if (record.publishedAt !== null && (typeof record.publishedAt !== "string" || Number.isNaN(Date.parse(record.publishedAt)))) {

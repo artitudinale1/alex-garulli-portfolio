@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CoverImage } from "@/components/blog-cover";
 import { categoryLabel, type BlogPost } from "@/lib/blog/schema";
 import { renderMarkdown } from "@/lib/blog/markdown";
 import { formatMonthYear } from "@/lib/format";
@@ -55,6 +56,7 @@ export function BlogIndex({ posts }: { posts: BlogPost[] }) {
         <div className="project-grid">
           {posts.map((post) => (
             <article className="project blog-card" key={post.id}>
+              <CoverImage url={post.coverImageUrl} alt={post.title} sizes="(min-width: 768px) 32rem, calc(100vw - 2.5rem)" />
               <p className="eyebrow">
                 {categoryLabel(post.category)} · {formatMonthYear(post.publishedAt)}
               </p>
@@ -84,6 +86,7 @@ export function BlogArticle({ post }: { post: BlogPost }) {
           </p>
           <h1>{post.title}</h1>
           <p className="lead">{post.excerpt}</p>
+          <CoverImage url={post.coverImageUrl} alt={post.title} sizes="(min-width: 768px) 42rem, calc(100vw - 2.5rem)" />
           <div className="blog-content" dangerouslySetInnerHTML={{ __html: renderMarkdown(post.contentMarkdown) }} />
           {post.tags.length > 0 ? (
             <ul className="technologies">

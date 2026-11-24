@@ -20,6 +20,7 @@ const EDITOR_FIELDS = `
   tags
   status
   publishedAt
+  coverImageUrl
 `;
 
 const LIST_QUERY = `

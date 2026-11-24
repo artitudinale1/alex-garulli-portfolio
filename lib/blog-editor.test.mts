@@ -88,4 +88,16 @@ describe("editor articles", () => {
     assert.throws(() => parseEditorPosts({ posts: [draft] }));
     assert.equal(parseEditorPosts([draft, { ...draft, slug: "Bad Slug" }]).length, 1);
   });
+
+  it("keeps a Cloudinary cover and rejects an unsafe one", () => {
+    const cover = "https://res.cloudinary.com/demo/image/upload/v1/alex-blog/cat.jpg";
+    const parsed = parseEditorInput({ ...draft, id: "", coverImageUrl: cover, githubId: "1" });
+    assert.equal(parsed.ok, true);
+    if (!parsed.ok) return;
+    assert.equal(parsed.draft.coverImageUrl, cover);
+    assert.equal(toPostInput(parsed.draft).coverImageUrl, cover);
+    assert.equal(parseEditorInput({ ...draft, coverImageUrl: "javascript:alert(1)" }).ok, false);
+    assert.equal(parseEditorPost(draft)?.coverImageUrl, null);
+    assert.equal(parseEditorPost({ ...draft, coverImageUrl: cover })?.coverImageUrl, cover);
+  });
 });

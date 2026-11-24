@@ -39,6 +39,15 @@ describe("blog markdown", () => {
     const html = renderMarkdown("```\n<img src=x onerror=alert(1)>\n```");
     assert.match(html, /<pre><code>&lt;img src=x onerror=alert\(1\)&gt;<\/code><\/pre>/);
   });
+
+  it("renders https images with escaped alt text and drops unsafe sources", () => {
+    const html = renderMarkdown(
+      '![猫](https://res.cloudinary.com/demo/image/upload/v1/alex-blog/cat.jpg)\n\n![bad](javascript:alert(1))\n\n<ruby>猫<rt>ねこ</rt></ruby>',
+    );
+    assert.match(html, /<img src="https:\/\/res\.cloudinary\.com\/demo\/image\/upload\/f_auto,q_auto,w_1600\/v1\/alex-blog\/cat\.jpg" srcset="[^"]+" sizes="[^"]+" alt="猫"/);
+    assert.equal(html.includes("javascript:"), false);
+    assert.match(html, /<ruby>猫<rt>ねこ<\/rt><\/ruby>/);
+  });
 });
 
 describe("blog posts", () => {
@@ -48,6 +57,12 @@ describe("blog posts", () => {
     assert.equal(isBlogSlug("../admin"), false);
     assert.equal(parsePost({ ...sample, slug: "<script>" }), null);
     assert.equal(parsePost({ ...sample, tags: ["ok", 1] }), null);
+    assert.equal(parsePost(sample)?.coverImageUrl, null);
+    assert.equal(
+      parsePost({ ...sample, coverImageUrl: "https://res.cloudinary.com/demo/image/upload/v1/alex-blog/cat.jpg" })?.coverImageUrl,
+      "https://res.cloudinary.com/demo/image/upload/v1/alex-blog/cat.jpg",
+    );
+    assert.equal(parsePost({ ...sample, coverImageUrl: "not a url" })?.coverImageUrl, null);
   });
 
   it("keeps valid posts when one item is malformed", () => {
