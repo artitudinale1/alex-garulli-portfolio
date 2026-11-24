@@ -31,5 +31,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "contentful", "scripts", "i18n", "**/*.test.mts"]
+  "exclude": ["node_modules", "alex-blog-api", "contentful", "scripts", "i18n", "**/*.test.mts"]
 }

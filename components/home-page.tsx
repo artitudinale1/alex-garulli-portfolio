@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { HeroArt } from "@/components/hero-art";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { formatDateRange, paragraphs, safeEmail } from "@/lib/format";
@@ -112,6 +113,7 @@ export function HomePage({ portfolio, locale }: { portfolio: Portfolio; locale: 
               <a href="#experience">{copy.experience}</a>
               <a href="#certifications">{copy.certifications}</a>
               <a href="#contact">{copy.contact}</a>
+              <Link href="/blog">{copy.blog}</Link>
             </nav>
             <LanguageSwitcher locale={locale} label={copy.languages} />
           </div>
