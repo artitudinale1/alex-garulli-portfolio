@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { documentClassName } from "@/components/document";
 import { localeChoices } from "@/lib/i18n/locales";
 import { canonicalUrl, localeMetadata } from "@/lib/seo";
@@ -17,7 +18,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ))}
         <link rel="alternate" hrefLang="x-default" href={canonicalUrl("en")} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
