@@ -8,6 +8,8 @@ import { renderMarkdown } from "@/lib/blog/markdown";
 import { blogCategories, categoryLabel, type BlogCategory } from "@/lib/blog/schema";
 import { formatMonthYear } from "@/lib/format";
 import { CoverImage } from "@/components/blog-cover";
+import { BlogImagePicker } from "@/components/blog-image-picker";
+import { LIBRARY_ALT_MESSAGE, applyLibrarySelection, imageAltText } from "@/lib/blog/image-library";
 
 type FormState = {
   id: string | null;
@@ -95,6 +97,29 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
     return payload.url;
   }
 
+  function applyImage(target: "cover" | "inline", url: string) {
+    const area = contentRef.current;
+    const selected = applyLibrarySelection({
+      target,
+      image: { url },
+      alt: imageAlt,
+      contentMarkdown: form.contentMarkdown,
+      selectionStart: area?.selectionStart,
+      selectionEnd: area?.selectionEnd,
+    });
+    if (!selected.ok) {
+      setError(selected.message);
+      return;
+    }
+    setError(null);
+    if (selected.value.target === "cover") {
+      update({ coverImageUrl: selected.value.coverImageUrl });
+      return;
+    }
+    update({ contentMarkdown: selected.value.contentMarkdown });
+    setImageAlt("");
+  }
+
   async function onCoverSelected(file: File | null) {
     if (!file) return;
     setError(null);
@@ -102,7 +127,7 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
     setUploading("cover");
     try {
       const url = await uploadFile(file);
-      if (url) update({ coverImageUrl: url });
+      if (url) applyImage("cover", url);
     } catch {
       setError("The image could not be uploaded.");
     } finally {
@@ -112,8 +137,7 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
 
   async function onInlineSelected(file: File | null) {
     if (!file) return;
-    const alt = imageAlt.replace(/[\[\]]/g, "").replace(/\s+/g, " ").trim();
-    if (!alt) {
+    if (!imageAltText(imageAlt)) {
       setError("Add a short description before uploading an image into the article.");
       return;
     }
@@ -122,14 +146,7 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
     setUploading("inline");
     try {
       const url = await uploadFile(file);
-      if (!url) return;
-      const markdown = `![${alt}](${url})`;
-      const area = contentRef.current;
-      const start = area?.selectionStart ?? form.contentMarkdown.length;
-      const end = area?.selectionEnd ?? form.contentMarkdown.length;
-      const next = `${form.contentMarkdown.slice(0, start)}${markdown}${form.contentMarkdown.slice(end)}`;
-      update({ contentMarkdown: next });
-      setImageAlt("");
+      if (url) applyImage("inline", url);
     } catch {
       setError("The image could not be uploaded.");
     } finally {
@@ -257,6 +274,12 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
                     }}
                   />
                 </label>
+                <BlogImagePicker
+                  title="Choose a cover image"
+                  accessibleName="Choose from library for the cover"
+                  disabled={pending || uploading !== null}
+                  onSelect={(image) => applyImage("cover", image.url)}
+                />
                 {form.coverImageUrl ? (
                   <button type="button" data-secondary disabled={pending || uploading !== null} onClick={() => update({ coverImageUrl: null })}>
                     Remove cover
@@ -294,6 +317,21 @@ export function BlogEditor({ posts, initialError }: { posts: EditorPost[]; initi
                   }}
                 />
               </label>
+              <BlogImagePicker
+                title="Choose an article image"
+                accessibleName="Choose from library for the article"
+                disabled={pending || uploading !== null}
+                onBeforeOpen={() => {
+                  if (imageAltText(imageAlt)) {
+                    setError(null);
+                    return true;
+                  }
+                  setError(LIBRARY_ALT_MESSAGE);
+                  setNotice(null);
+                  return false;
+                }}
+                onSelect={(image) => applyImage("inline", image.url)}
+              />
             </div>
             <p className="editor-hint">
               Furigana stays in the Markdown, for example <code>{"<ruby>猫<rt>ねこ</rt></ruby>"}</code>.

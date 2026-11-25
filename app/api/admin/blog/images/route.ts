@@ -1,6 +1,38 @@
 import { editorGate } from "@/lib/blog/editor-api";
 import { cloudinaryConfigured, ImageUploadError, unexpectedUploadLog, uploadBlogImage } from "@/lib/blog/cloudinary";
+import { listBlogImages } from "@/lib/blog/cloudinary-library";
+import { ImageLibraryError, imageLibraryDenied, parseLibraryCursor } from "@/lib/blog/image-library";
 import { imageUploadError, MAX_IMAGE_BYTES } from "@/lib/blog/images";
+
+function libraryJson(body: unknown, status = 200) {
+  return Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
+}
+
+export async function GET(request: Request) {
+  const gate = await editorGate();
+  const denied = imageLibraryDenied(gate.state);
+  if (denied) return libraryJson({ error: denied.error }, denied.status);
+
+  let cursorValue: string | null = null;
+  try {
+    cursorValue = new URL(request.url).searchParams.get("cursor");
+  } catch {
+    return libraryJson({ error: "That page of the library could not be read." }, 400);
+  }
+  const cursor = parseLibraryCursor(cursorValue);
+  if (!cursor.ok) return libraryJson({ error: "That page of the library could not be read." }, 400);
+  if (!cloudinaryConfigured()) return libraryJson({ error: "The image library is not configured." }, 503);
+
+  try {
+    const page = await listBlogImages(cursor.cursor);
+    return libraryJson(page);
+  } catch (error) {
+    if (!(error instanceof ImageLibraryError)) console.error("Blog image library failed", unexpectedUploadLog(error));
+    const message = error instanceof ImageLibraryError ? error.message : "The image library could not be loaded.";
+    const status = error instanceof ImageLibraryError ? error.status : 502;
+    return libraryJson({ error: message }, status);
+  }
+}
 
 export async function POST(request: Request) {
   const gate = await editorGate();
