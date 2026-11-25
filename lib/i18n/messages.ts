@@ -68,38 +68,49 @@ const messages = {
       "Illustrazione di Beta e Kamome con fiori di ciliegio, un torii, il monte Fuji e la Tokyo Tower.",
   },
   ja: {
-    skip: "本文へ移動",
-    sections: "ページ内のセクション",
-    languages: "言語",
-    expertise: "専門分野",
+    skip: "<ruby>本文<rt>ほんぶん</rt></ruby>へ<ruby>移動<rt>いどう</rt></ruby>",
+    sections: "ページ<ruby>内<rt>ない</rt></ruby>のセクション",
+    languages: "<ruby>言語<rt>げんご</rt></ruby>",
+    expertise: "<ruby>専門分野<rt>せんもんぶんや</rt></ruby>",
     projects: "プロジェクト",
-    experience: "経歴",
-    certifications: "資格",
-    contact: "連絡先",
+    experience: "<ruby>経歴<rt>けいれき</rt></ruby>",
+    certifications: "<ruby>資格<rt>しかく</rt></ruby>",
+    contact: "<ruby>連絡先<rt>れんらくさき</rt></ruby>",
     blog: "ブログ",
-    expertiseHeading: "技術的な専門性",
-    expertiseIntro: "本番のウェブアプリケーションを作るために使っているツールとプラットフォームです。",
-    projectsHeading: "主なプロジェクト",
-    projectsIntro: "公開順の制作実績と個人プロジェクトです。",
-    featured: "注目のプロジェクト",
-    experienceHeading: "職務経歴",
-    experienceIntro: "新しい役割から順に記載しています。",
-    certificationsHeading: "資格",
-    contactHeading: "連絡先",
-    contactIntro: "フロントエンドの役割やプロジェクトについてのご相談はこちらから。",
+    expertiseHeading: "<ruby>技術的<rt>ぎじゅつてき</rt></ruby>な<ruby>専門性<rt>せんもんせい</rt></ruby>",
+    expertiseIntro:
+      "<ruby>本番<rt>ほんばん</rt></ruby>のウェブアプリケーションを<ruby>作<rt>つく</rt></ruby>るために<ruby>使<rt>つか</rt></ruby>っているツールとプラットフォームです。",
+    projectsHeading: "<ruby>主<rt>おも</rt></ruby>なプロジェクト",
+    projectsIntro:
+      "<ruby>公開順<rt>こうかいじゅん</rt></ruby>の<ruby>制作実績<rt>せいさくじっせき</rt></ruby>と<ruby>個人<rt>こじん</rt></ruby>プロジェクトです。",
+    featured: "<ruby>注目<rt>ちゅうもく</rt></ruby>のプロジェクト",
+    experienceHeading: "<ruby>職務経歴<rt>しょくむけいれき</rt></ruby>",
+    experienceIntro:
+      "<ruby>新<rt>あたら</rt></ruby>しい<ruby>役割<rt>やくわり</rt></ruby>から<ruby>順<rt>じゅん</rt></ruby>に<ruby>記載<rt>きさい</rt></ruby>しています。",
+    certificationsHeading: "<ruby>資格<rt>しかく</rt></ruby>",
+    contactHeading: "<ruby>連絡先<rt>れんらくさき</rt></ruby>",
+    contactIntro:
+      "フロントエンドの<ruby>役割<rt>やくわり</rt></ruby>やプロジェクトについてのご<ruby>相談<rt>そうだん</rt></ruby>はこちらから。",
     email: "メール",
     linkedin: "LinkedIn",
     github: "GitHub",
-    downloadCv: "履歴書をダウンロード",
+    downloadCv: "<ruby>履歴書<rt>りれきしょ</rt></ruby>をダウンロード",
     repository: "リポジトリ",
     liveDemo: "ライブデモ",
-    present: "現在",
-    unavailableTitle: "ポートフォリオを一時的に表示できません",
+    present: "<ruby>現在<rt>げんざい</rt></ruby>",
+    unavailableTitle: "ポートフォリオを<ruby>一時的<rt>いちじてき</rt></ruby>に<ruby>表示<rt>ひょうじ</rt></ruby>できません",
     unavailableBody:
-      "公開中のプロフィール、経歴、プロジェクトを読み込めませんでした。しばらくしてからもう一度お試しください。",
+      "<ruby>公開中<rt>こうかいちゅう</rt></ruby>のプロフィール、<ruby>経歴<rt>けいれき</rt></ruby>、プロジェクトを<ruby>読<rt>よ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>めませんでした。しばらくしてからもう<ruby>一度<rt>いちど</rt></ruby>お<ruby>試<rt>ため</rt></ruby>しください。",
     heroAlt: "桜、鳥居、富士山、東京タワーと一緒に描かれたBetaとKamomeのイラスト。",
   },
 } as const;
+
+export const japaneseDisclaimer = {
+  ja: "この<ruby>日本語版<rt>にほんごばん</rt></ruby>はAIを<ruby>使<rt>つか</rt></ruby>って<ruby>作成<rt>さくせい</rt></ruby>しました。<ruby>私<rt>わたし</rt></ruby>の<ruby>日本語<rt>にほんご</rt></ruby>レベルはBeginner 3です。まだ<ruby>勉強中<rt>べんきょうちゅう</rt></ruby>です！",
+  en: "This Japanese version was created using AI. My current Japanese level is Beginner 3, and I'm still learning!",
+} as const;
+
+export const japaneseLanguageLabel = "<ruby>日本語<rt>にほんご</rt></ruby>";
 
 export type Messages = (typeof messages)[SiteLocale];
 

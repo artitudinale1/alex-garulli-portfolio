@@ -32,7 +32,7 @@ export const translationCatalog: CatalogItem[] = [
       },
       "ja-JP": {
         role: "シニアフロントエンドエンジニア",
-        bio: "本番のウェブアプリケーションを10年以上手がけてきたシニアフロントエンドエンジニアです。HTML、CSS/Sass、JavaScript、CMSのテンプレートから、React、TypeScript、Next.jsまで幅広く扱っています。\n\nDrupal、WordPress、Contentfulを含む従来型およびヘッドレスCMSに取り組み、RESTおよびGraphQL APIを連携しています。Contentful Certified Professionalでもあります。\n\nNode.js/Expressのマイクロサービスによるデータの集約と計算、再利用できるコンポーネント設計、自動テスト、アクセシビリティ、パフォーマンス最適化、AIを活用した開発の経験があります。\n\nコード以外では、漫画、アニメ、日本文化が好きで、現在日本語を勉強しています 🗻。猫も大好きです 🐱。このサイトに見慣れた顔があるのは、そのためかもしれません。",
+        bio: "<ruby>本番<rt>ほんばん</rt></ruby>のウェブアプリケーションを10<ruby>年<rt>ねん</rt></ruby><ruby>以上<rt>いじょう</rt></ruby><ruby>手<rt>て</rt></ruby>がけてきたシニアフロントエンドエンジニアです。HTML、CSS/Sass、JavaScript、CMSのテンプレートから、React、TypeScript、Next.jsまで<ruby>幅<rt>はば</rt></ruby><ruby>広<rt>ひろ</rt></ruby>く<ruby>扱<rt>あつか</rt></ruby>っています。\n\nDrupal、WordPress、Contentfulを<ruby>含<rt>ふく</rt></ruby>む<ruby>従来型<rt>じゅうらいがた</rt></ruby>およびヘッドレスCMSに<ruby>取<rt>と</rt></ruby>り<ruby>組<rt>く</rt></ruby>み、RESTおよびGraphQL APIを<ruby>連携<rt>れんけい</rt></ruby>しています。Contentful Certified Professionalでもあります。\n\nNode.js/Expressのマイクロサービスによるデータの<ruby>集約<rt>しゅうやく</rt></ruby>と<ruby>計算<rt>けいさん</rt></ruby>、<ruby>再利用<rt>さいりよう</rt></ruby>できるコンポーネント<ruby>設計<rt>せっけい</rt></ruby>、<ruby>自動<rt>じどう</rt></ruby>テスト、アクセシビリティ、パフォーマンス<ruby>最適化<rt>さいてきか</rt></ruby>、AIを<ruby>活用<rt>かつよう</rt></ruby>した<ruby>開発<rt>かいはつ</rt></ruby>の<ruby>経験<rt>けいけん</rt></ruby>があります。\n\nコード<ruby>以外<rt>いがい</rt></ruby>では、<ruby>漫画<rt>まんが</rt></ruby>、アニメ、<ruby>日本文化<rt>にほんぶんか</rt></ruby>が<ruby>好<rt>す</rt></ruby>きで、<ruby>現在<rt>げんざい</rt></ruby><ruby>日本語<rt>にほんご</rt></ruby>を<ruby>勉強<rt>べんきょう</rt></ruby>しています 🗻。<ruby>猫<rt>ねこ</rt></ruby>も<ruby>大<rt>だい</rt></ruby><ruby>好<rt>す</rt></ruby>きです 🐱。このサイトに<ruby>見<rt>み</rt></ruby><ruby>慣<rt>な</rt></ruby>れた<ruby>顔<rt>かお</rt></ruby>があるのは、そのためかもしれません。",
       },
     },
   },
@@ -53,7 +53,7 @@ export const translationCatalog: CatalogItem[] = [
       "ja-JP": {
         role: "シニアフロントエンドエンジニア",
         description:
-          "企業向けの本番React、Next.js、TypeScriptアプリケーションの開発と保守を担当し、ヘッドレスCMS、REST、GraphQLのサービスを連携しています。デザイン、QA、バックエンドのエンジニアと協力して、再利用できるReactコンポーネントとStorybookの作例を作っています。LighthouseによるSSRとパフォーマンスの調査、ESLintとSonarQubeによるコードレビュー、Node.jsの保守とリリースも担当します。主な実績はDagrofa（Azure DevOps上のNext.jsと分離型Drupal）、FANUC、VisitDenmark、Rehlko / Kohler（Contentful）、CGIAR（DrupalとTwig）です。",
+          "<ruby>企業<rt>きぎょう</rt></ruby><ruby>向<rt>む</rt></ruby>けの<ruby>本番<rt>ほんばん</rt></ruby>React、Next.js、TypeScriptアプリケーションの<ruby>開発<rt>かいはつ</rt></ruby>と<ruby>保守<rt>ほしゅ</rt></ruby>を<ruby>担当<rt>たんとう</rt></ruby>し、ヘッドレスCMS、REST、GraphQLのサービスを<ruby>連携<rt>れんけい</rt></ruby>しています。デザイン、QA、バックエンドのエンジニアと<ruby>協力<rt>きょうりょく</rt></ruby>して、<ruby>再利用<rt>さいりよう</rt></ruby>できるReactコンポーネントとStorybookの<ruby>作例<rt>さくれい</rt></ruby>を<ruby>作<rt>つく</rt></ruby>っています。LighthouseによるSSRとパフォーマンスの<ruby>調査<rt>ちょうさ</rt></ruby>、ESLintとSonarQubeによるコードレビュー、Node.jsの<ruby>保守<rt>ほしゅ</rt></ruby>とリリースも<ruby>担当<rt>たんとう</rt></ruby>します。<ruby>主<rt>おも</rt></ruby>な<ruby>実績<rt>じっせき</rt></ruby>はDagrofa（Azure DevOps<ruby>上<rt>じょう</rt></ruby>のNext.jsと<ruby>分離型<rt>ぶんりがた</rt></ruby>Drupal）、FANUC、VisitDenmark、Rehlko / Kohler（Contentful）、CGIAR（DrupalとTwig）です。",
       },
     },
   },
@@ -72,9 +72,9 @@ export const translationCatalog: CatalogItem[] = [
           "Sviluppo di funzionalità React e Redux e di API Node.js serverless per implementazioni Twilio Flex, tra cui AnyVan. Guida di un plugin riutilizzabile Canned Responses con Node.js, Express, Twilio Flex e documenti Sync. Integrazione Twilio Flex per CarFinance247 tra CMS, database e servizi frontend.",
       },
       "ja-JP": {
-        role: "認定 Twilio ウェブデベロッパー",
+        role: "<ruby>認定<rt>にんてい</rt></ruby> Twilio ウェブデベロッパー",
         description:
-          "AnyVanを含むTwilio Flexの実装で、ReactとReduxの機能、およびサーバーレスのNode.js APIを開発しました。Node.js、Express、Twilio Flex、Syncドキュメントを使った再利用可能なCanned Responsesプラグインを主導しました。CarFinance247では、CMS、データベース、フロントエンドにまたがるTwilio Flexの連携を担当しました。",
+          "AnyVanを<ruby>含<rt>ふく</rt></ruby>むTwilio Flexの<ruby>実装<rt>じっそう</rt></ruby>で、ReactとReduxの<ruby>機能<rt>きのう</rt></ruby>、およびサーバーレスのNode.js APIを<ruby>開発<rt>かいはつ</rt></ruby>しました。Node.js、Express、Twilio Flex、Syncドキュメントを<ruby>使<rt>つか</rt></ruby>った<ruby>再利用可能<rt>さいりようかのう</rt></ruby>なCanned Responsesプラグインを<ruby>主導<rt>しゅどう</rt></ruby>しました。CarFinance247では、CMS、データベース、フロントエンドにまたがるTwilio Flexの<ruby>連携<rt>れんけい</rt></ruby>を<ruby>担当<rt>たんとう</rt></ruby>しました。",
       },
     },
   },
@@ -95,7 +95,7 @@ export const translationCatalog: CatalogItem[] = [
       "ja-JP": {
         role: "ソフトウェアエンジニア",
         description:
-          "npmモジュールとして配布する再利用可能なReactコンポーネントライブラリを作り、Jest、Playwright、Cypress、Percyで自動テストを整備しました。顧客ポータルをAngularJSからReactとReduxへ移行しました。顧客とエネルギー資産のデータを集約し、顧客向けポータルの指標を計算するNode.js/ExpressのRESTマイクロサービスを3つ開発しました。",
+          "npmモジュールとして<ruby>配布<rt>はいふ</rt></ruby>する<ruby>再利用可能<rt>さいりようかのう</rt></ruby>なReactコンポーネントライブラリを<ruby>作<rt>つく</rt></ruby>り、Jest、Playwright、Cypress、Percyで<ruby>自動<rt>じどう</rt></ruby>テストを<ruby>整備<rt>せいび</rt></ruby>しました。<ruby>顧客<rt>こきゃく</rt></ruby>ポータルをAngularJSからReactとReduxへ<ruby>移行<rt>いこう</rt></ruby>しました。<ruby>顧客<rt>こきゃく</rt></ruby>とエネルギー<ruby>資産<rt>しさん</rt></ruby>のデータを<ruby>集約<rt>しゅうやく</rt></ruby>し、<ruby>顧客<rt>こきゃく</rt></ruby><ruby>向<rt>む</rt></ruby>けポータルの<ruby>指標<rt>しひょう</rt></ruby>を<ruby>計算<rt>けいさん</rt></ruby>するNode.js/ExpressのRESTマイクロサービスを3つ<ruby>開発<rt>かいはつ</rt></ruby>しました。",
       },
     },
   },
@@ -116,7 +116,7 @@ export const translationCatalog: CatalogItem[] = [
       "ja-JP": {
         role: "ウェブデベロッパー",
         description:
-          "ASP.NETからMagento 2へのeコマース移行でフロントエンド実装を主導し、デザイン仕様からレスポンシブなテンプレートとSassを開発しました。",
+          "ASP.NETからMagento 2へのeコマース<ruby>移行<rt>いこう</rt></ruby>でフロントエンド<ruby>実装<rt>じっそう</rt></ruby>を<ruby>主導<rt>しゅどう</rt></ruby>し、デザイン<ruby>仕様<rt>しよう</rt></ruby>からレスポンシブなテンプレートとSassを<ruby>開発<rt>かいはつ</rt></ruby>しました。",
       },
     },
   },
@@ -137,7 +137,7 @@ export const translationCatalog: CatalogItem[] = [
       "ja-JP": {
         role: "フロントエンドデベロッパー",
         description:
-          "コミュニティ向けの地図アプリケーションをAngularJSで開発・保守し、研究データ用のDjangoバックエンドであるGeoKeyも支援しました。",
+          "コミュニティ<ruby>向<rt>む</rt></ruby>けの<ruby>地図<rt>ちず</rt></ruby>アプリケーションをAngularJSで<ruby>開発<rt>かいはつ</rt></ruby>・<ruby>保守<rt>ほしゅ</rt></ruby>し、<ruby>研究<rt>けんきゅう</rt></ruby>データ<ruby>用<rt>よう</rt></ruby>のDjangoバックエンドであるGeoKeyも<ruby>支援<rt>しえん</rt></ruby>しました。",
       },
     },
   },
@@ -158,7 +158,7 @@ export const translationCatalog: CatalogItem[] = [
       "ja-JP": {
         role: "ウェブデベロッパー",
         description:
-          "ロンドンでの契約フロントエンド開発。Kurt GeigerではレスポンシブなMagentoのeコマースを担当し、AnyVanではPugとSassを使ったJavaScriptのインターフェースを作りました。",
+          "ロンドンでの<ruby>契約<rt>けいやく</rt></ruby>フロントエンド<ruby>開発<rt>かいはつ</rt></ruby>。Kurt GeigerではレスポンシブなMagentoのeコマースを<ruby>担当<rt>たんとう</rt></ruby>し、AnyVanではPugとSassを<ruby>使<rt>つか</rt></ruby>ったJavaScriptのインターフェースを<ruby>作<rt>つく</rt></ruby>りました。",
       },
     },
   },
@@ -176,7 +176,7 @@ export const translationCatalog: CatalogItem[] = [
       },
       "ja-JP": {
         description:
-          "決定的な金融計算を行うReactとTypeScriptのアプリケーションです。AIを活用した開発とAIコパイロットで作り、Cloudflare Workerを連携し、自動テストを備え、GitHub Pagesで公開しています。",
+          "<ruby>決定的<rt>けっていてき</rt></ruby>な<ruby>金融計算<rt>きんゆうけいさん</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>うReactとTypeScriptのアプリケーションです。AIを<ruby>活用<rt>かつよう</rt></ruby>した<ruby>開発<rt>かいはつ</rt></ruby>とAIコパイロットで<ruby>作<rt>つく</rt></ruby>り、Cloudflare Workerを<ruby>連携<rt>れんけい</rt></ruby>し、<ruby>自動<rt>じどう</rt></ruby>テストを<ruby>備<rt>そな</rt></ruby>え、GitHub Pagesで<ruby>公開<rt>こうかい</rt></ruby>しています。",
       },
     },
   },
@@ -194,7 +194,7 @@ export const translationCatalog: CatalogItem[] = [
       },
       "ja-JP": {
         description:
-          "LimeJumpの顧客ポータルをAngularJSからReactとReduxへ移行しました。エネルギー資産のデータを集約し、顧客ポータルに表示するエネルギーと財務の指標を計算するNode.js/Expressのマイクロサービスを3つ開発しました。",
+          "LimeJumpの<ruby>顧客<rt>こきゃく</rt></ruby>ポータルをAngularJSからReactとReduxへ<ruby>移行<rt>いこう</rt></ruby>しました。エネルギー<ruby>資産<rt>しさん</rt></ruby>のデータを<ruby>集約<rt>しゅうやく</rt></ruby>し、<ruby>顧客<rt>こきゃく</rt></ruby>ポータルに<ruby>表示<rt>ひょうじ</rt></ruby>するエネルギーと<ruby>財務<rt>ざいむ</rt></ruby>の<ruby>指標<rt>しひょう</rt></ruby>を<ruby>計算<rt>けいさん</rt></ruby>するNode.js/Expressのマイクロサービスを3つ<ruby>開発<rt>かいはつ</rt></ruby>しました。",
       },
     },
   },
@@ -212,7 +212,7 @@ export const translationCatalog: CatalogItem[] = [
       },
       "ja-JP": {
         description:
-          "npmモジュールとして配布する再利用可能なReactコンポーネントライブラリを作りました。Jestのユニットテスト、PlaywrightとCypressのエンドツーエンドテスト、GitHub Actionsに組み込んだPercyのビジュアルリグレッションテストを備えています。",
+          "npmモジュールとして<ruby>配布<rt>はいふ</rt></ruby>する<ruby>再利用可能<rt>さいりようかのう</rt></ruby>なReactコンポーネントライブラリを<ruby>作<rt>つく</rt></ruby>りました。Jestのユニットテスト、PlaywrightとCypressのエンドツーエンドテスト、GitHub Actionsに<ruby>組<rt>く</rt></ruby>み<ruby>込<rt>こ</rt></ruby>んだPercyのビジュアルリグレッションテストを<ruby>備<rt>そな</rt></ruby>えています。",
       },
     },
   },
@@ -230,7 +230,7 @@ export const translationCatalog: CatalogItem[] = [
       },
       "ja-JP": {
         description:
-          "Drupalから分離したNext.jsフロントエンドの保守です。Node.jsの更新と本番リリースを含みます。",
+          "Drupalから<ruby>分離<rt>ぶんり</rt></ruby>したNext.jsフロントエンドの<ruby>保守<rt>ほしゅ</rt></ruby>です。Node.jsの<ruby>更新<rt>こうしん</rt></ruby>と<ruby>本番<rt>ほんばん</rt></ruby>リリースを<ruby>含<rt>ふく</rt></ruby>みます。",
       },
     },
   },
@@ -248,7 +248,7 @@ export const translationCatalog: CatalogItem[] = [
       },
       "ja-JP": {
         description:
-          "Zingで主導した、定型返信のための再利用可能なTwilio Flexプラグインです。Node.js、Express、Syncドキュメントを使っています。",
+          "Zingで<ruby>主導<rt>しゅどう</rt></ruby>した、<ruby>定型返信<rt>ていけいへんしん</rt></ruby>のための<ruby>再利用可能<rt>さいりようかのう</rt></ruby>なTwilio Flexプラグインです。Node.js、Express、Syncドキュメントを<ruby>使<rt>つか</rt></ruby>っています。",
       },
     },
   },
@@ -263,7 +263,8 @@ export const translationCatalog: CatalogItem[] = [
         description: "Progetto frontend di produzione selezionato, con integrazione Contentful.",
       },
       "ja-JP": {
-        description: "Contentfulを連携した、選定済みの本番フロントエンドプロジェクトです。",
+        description:
+          "Contentfulを<ruby>連携<rt>れんけい</rt></ruby>した、<ruby>選定済み<rt>せんていずみ</rt></ruby>の<ruby>本番<rt>ほんばん</rt></ruby>フロントエンドプロジェクトです。",
       },
     },
   },
