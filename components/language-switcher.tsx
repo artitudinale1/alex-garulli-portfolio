@@ -1,3 +1,5 @@
+import { Furigana } from "@/components/furigana";
+import { japaneseLanguageLabel } from "@/lib/i18n/messages";
 import { localeChoices, type SiteLocale } from "@/lib/i18n/locales";
 
 export function LanguageSwitcher({ locale, label }: { locale: SiteLocale; label: string }) {
@@ -11,7 +13,14 @@ export function LanguageSwitcher({ locale, label }: { locale: SiteLocale; label:
               hrefLang={choice.htmlLang}
               aria-current={choice.locale === locale ? "page" : undefined}
             >
-              {choice.label}
+              {locale === "ja" && choice.locale === "ja" ? (
+                <>
+                  {"🇯🇵 "}
+                  <Furigana text={japaneseLanguageLabel} />
+                </>
+              ) : (
+                choice.label
+              )}
             </a>
           </li>
         ))}
