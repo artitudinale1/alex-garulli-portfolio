@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { BLOG_LIBRARY_FOLDER } from "./image-library.ts";
 import { detectImageKind, imageContentType, parseStoredImageUrl } from "./images.ts";
 
 export class ImageUploadError extends Error {
@@ -81,14 +82,14 @@ export async function uploadBlogImage(bytes: Uint8Array, env: NodeJS.ProcessEnv 
   if (!kind) throw new ImageUploadError("Choose a JPEG, PNG, WebP or GIF under 5 MB.");
 
   const timestamp = String(Math.floor(Date.now() / 1000));
-  const params = { folder: "alex-blog", timestamp };
+  const params = { folder: BLOG_LIBRARY_FOLDER, timestamp };
   const signature = signCloudinaryParams(params, apiSecret);
   const body = new FormData();
   body.append("file", new Blob([Buffer.from(bytes)], { type: imageContentType(kind) }), "image");
   body.append("api_key", apiKey);
   body.append("timestamp", timestamp);
   body.append("signature", signature);
-  body.append("folder", "alex-blog");
+  body.append("folder", BLOG_LIBRARY_FOLDER);
 
   let response: Response;
   try {
@@ -115,7 +116,7 @@ function cloudinaryErrorMessage(error: unknown): unknown {
   return undefined;
 }
 
-function sanitizeUploadMessage(value: unknown, secrets: readonly string[]): string | undefined {
+export function sanitizeUploadMessage(value: unknown, secrets: readonly string[]): string | undefined {
   if (typeof value !== "string") return undefined;
   let message = value.replace(/\s+/g, " ").trim();
   if (!message) return undefined;
