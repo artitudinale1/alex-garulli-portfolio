@@ -1025,6 +1025,85 @@ article > .blog-cover-frame {
   margin-top: 0.9rem;
 }
 
+.agent-lab .agent-choices,
+.agent-lab .agent-images {
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 0;
+}
+
+.agent-lab .agent-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+}
+
+.agent-lab .agent-choices label,
+.agent-lab .agent-images label {
+  width: auto;
+}
+
+.agent-lab .agent-choices input {
+  width: auto;
+}
+
+.agent-lab .agent-images {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.agent-lab button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.agent-thumb {
+  display: block;
+  width: min(100%, 16rem);
+  height: auto;
+  margin: 0.4rem 0 1rem;
+  border-radius: 0.8rem;
+}
+
+.agent-log {
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem 0.85rem 2rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--card);
+}
+
+.agent-log li + li {
+  margin-top: 0.35rem;
+}
+
+.agent-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.agent-metrics div {
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--card);
+}
+
+.agent-metrics dt {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.agent-metrics dd {
+  margin: 0.2rem 0 0;
+}
+
+.agent-result {
+  margin-top: 1.5rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
