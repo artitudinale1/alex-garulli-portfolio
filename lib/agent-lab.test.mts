@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import { assessAgentSubmission, contentLengthError, MAX_AGENT_BYTES, submissionFromForm } from "./agent/form.ts";
 import { handleAgentPost, sanitizeAgentEvent, type AgentRunner } from "./agent/http.ts";
-import { executionFromRun, publicErrorMessage, submissionInProgress, type PublicAgentRun } from "./agent/outcome.ts";
+import { executionFromRun, publicErrorMessage, submissionInProgress, validationProgressMessage, type PublicAgentRun } from "./agent/outcome.ts";
 
 const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xd9]);
 
@@ -142,6 +142,8 @@ describe("agent execution states", () => {
     assert.equal(submissionInProgress("running"), true);
     assert.equal(submissionInProgress("finished"), false);
     assert.equal(publicErrorMessage(new Error("rejected sk-test-secret")), "The run could not be completed.");
+    assert.equal(validationProgressMessage(null), "Validation skipped — no draft created");
+    assert.equal(validationProgressMessage({ ok: false, error: "The article is too long." }), "Validation recorded.");
   });
 });
 
