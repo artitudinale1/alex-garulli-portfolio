@@ -1,6 +1,15 @@
 import Link from "next/link";
+import { editorGate } from "@/lib/blog/editor-api";
 
-export function EditorFrame({ children }: { children: React.ReactNode }) {
+export function EditorShell({
+  children,
+  section = "editor",
+  administrator = false,
+}: {
+  children: React.ReactNode;
+  section?: "editor" | "agent";
+  administrator?: boolean;
+}) {
   return (
     <>
       <a className="skip" href="#content">
@@ -14,9 +23,14 @@ export function EditorFrame({ children }: { children: React.ReactNode }) {
           <nav aria-label="Editor">
             <Link href="/">Portfolio</Link>
             <Link href="/blog">Blog</Link>
-            <Link href="/admin/blog" aria-current="page">
+            <Link href="/admin/blog" aria-current={administrator && section === "agent" ? undefined : "page"}>
               Editor
             </Link>
+            {administrator ? (
+              <Link href="/admin/agent" aria-current={section === "agent" ? "page" : undefined}>
+                Agentic Lab
+              </Link>
+            ) : null}
           </nav>
         </div>
       </header>
@@ -24,5 +38,20 @@ export function EditorFrame({ children }: { children: React.ReactNode }) {
         {children}
       </main>
     </>
+  );
+}
+
+export async function EditorFrame({
+  children,
+  section = "editor",
+}: {
+  children: React.ReactNode;
+  section?: "editor" | "agent";
+}) {
+  const administrator = (await editorGate()).state === "editor";
+  return (
+    <EditorShell section={section} administrator={administrator}>
+      {children}
+    </EditorShell>
   );
 }
