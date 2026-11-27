@@ -84,3 +84,7 @@ export function executionFromRun(run: PublicAgentRun): LabExecution {
 export function submissionInProgress(phase: LabExecution["phase"]): boolean {
   return phase === "running";
 }
+
+export function validationProgressMessage(article: unknown): string {
+  return article == null ? "Validation skipped — no draft created" : "Validation recorded.";
+}
