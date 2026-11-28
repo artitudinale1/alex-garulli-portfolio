@@ -208,7 +208,8 @@ a:hover {
   text-decoration: none;
 }
 
-.site-header nav a:hover {
+.site-header nav a:hover,
+.site-header nav a[aria-current="page"] {
   color: var(--ink);
 }
 
@@ -373,9 +374,61 @@ h3 {
   font-size: 0.95rem;
 }
 
-.project-grid {
+.project-grid,
+.service-grid {
   display: grid;
   gap: 1rem;
+}
+
+.service-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  box-shadow: var(--shadow);
+}
+
+.service-card h2 {
+  margin-bottom: 0.15rem;
+  font-size: clamp(1.45rem, 2vw, 1.8rem);
+  line-height: 1.15;
+}
+
+.service-card .lead {
+  margin-bottom: 0.35rem;
+  font-size: 1.05rem;
+}
+
+.service-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-bottom: 0.35rem;
+  color: var(--accent);
+}
+
+.service-features {
+  margin: 0.45rem 0 0;
+  padding-left: 1.15rem;
+}
+
+.service-features li {
+  margin: 0.35rem 0;
+}
+
+.services-page h1 {
+  max-width: 16ch;
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+}
+
+.services-main {
+  padding-top: clamp(1.5rem, 4vw, 3rem);
+}
+
+.services-main .contact {
+  margin-top: 1.5rem;
 }
 
 .project,
@@ -525,7 +578,8 @@ h3 {
     grid-row: 2;
   }
 
-  .project-grid {
+  .project-grid,
+  .service-grid {
     grid-template-columns: 1fr 1fr;
   }
 

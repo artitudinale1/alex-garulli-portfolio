@@ -144,6 +144,9 @@ export function HomePage({ portfolio, locale }: { portfolio: Portfolio; locale: 
               <a href="#contact">
                 <LocaleText locale={locale} text={copy.contact} />
               </a>
+              <Link href="/services">
+                <LocaleText locale={locale} text={copy.services} />
+              </Link>
               <Link href="/blog">
                 <LocaleText locale={locale} text={copy.blog} />
               </Link>
