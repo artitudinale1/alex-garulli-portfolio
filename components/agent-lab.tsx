@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { assessAgentSubmission, MAX_AGENT_IMAGES, type AgentTextFields } from "@/lib/agent/form";
-import { executionFromRun, submissionInProgress, type LabExecution, type PublicAgentRun } from "@/lib/agent/outcome";
+import { executionFromRun, submissionInProgress, validationProgressMessage, type LabExecution, type PublicAgentRun } from "@/lib/agent/outcome";
 import { renderMarkdown } from "@/lib/blog/markdown";
 import { blogCategories, categoryLabel } from "@/lib/blog/schema";
 
@@ -321,6 +321,7 @@ function ExecutionSummary({ execution }: { execution: LabExecution }) {
   return (
     <div role="status">
       <p>The model finished this run.</p>
+      <p>{execution.validation === "skipped" ? "Validation skipped — no draft created" : "Validation passed."}</p>
       <p>{execution.persisted ? "The remote draft was stored." : execution.persistence}</p>
     </div>
   );
@@ -430,7 +431,7 @@ function eventLine(event: Record<string, unknown>): string | null {
   if (event.type === "model") return `Model call ${String(event.call)}: ${String(event.model)} · ${String(event.inputTokens)} in / ${String(event.outputTokens)} out`;
   if (event.type === "tool") return `Tool ${String(event.phase)}: ${String(event.name)}`;
   if (event.type === "usage") return `Usage: ${String(event.apiCalls)} calls · ${String(event.inputTokens)} in / ${String(event.outputTokens)} out`;
-  if (event.type === "validation") return "Validation recorded.";
+  if (event.type === "validation") return validationProgressMessage(event.article, event.images);
   if (event.type === "persistence") return `Persistence: ${String(event.message)}`;
   if (event.type === "duration") return `Duration: ${(Number(event.milliseconds) / 1000).toFixed(1)}s`;
   if (event.type === "result") return `Model status: ${String(event.status)}`;

@@ -1,7 +1,7 @@
 import { runPublishingAgent, type PublishingAgentResult, type PublishingEvent } from "agentic-publishing-lab";
 import { handleAgentPost, publicRun, type AgentRunnerInput } from "@/lib/agent/http";
 import { editorGate } from "@/lib/blog/editor-api";
-import type { PublicAgentRun } from "@/lib/agent/outcome";
+import type { PublicAgentRun, PublicValidationIssue } from "@/lib/agent/outcome";
 
 export const maxDuration = 300;
 
@@ -48,11 +48,7 @@ function toPublicRun(result: PublishingAgentResult): PublicAgentRun {
         }
       : null,
     validation: {
-      article: result.validation.article
-        ? result.validation.article.ok
-          ? { ok: true }
-          : { ok: false, error: result.validation.article.error }
-        : null,
+      article: publicArticleValidation(result.validation.article),
       images: result.validation.images
         ? result.validation.images.ok
           ? { ok: true }
@@ -65,4 +61,19 @@ function toPublicRun(result: PublishingAgentResult): PublicAgentRun {
       uncertain: false,
     },
   };
+}
+
+function publicArticleValidation(
+  article: PublishingAgentResult["validation"]["article"],
+): PublicAgentRun["validation"]["article"] {
+  if (!article) return null;
+  if (article.ok) return { ok: true };
+  const issues = article.issues?.flatMap((issue) => {
+    if (issue.message.trim() === "") return [];
+    const next: PublicValidationIssue = { code: issue.code, message: issue.message };
+    if (typeof issue.length === "number") next.length = issue.length;
+    if (typeof issue.maxLength === "number") next.maxLength = issue.maxLength;
+    return [next];
+  });
+  return { ok: false, error: article.error, ...(issues && issues.length > 0 ? { issues } : {}) };
 }

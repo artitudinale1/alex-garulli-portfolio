@@ -7,6 +7,13 @@ export type PublicAgentDraft = {
   status: string;
 };
 
+export type PublicValidationIssue = {
+  code: string;
+  message: string;
+  length?: number;
+  maxLength?: number;
+};
+
 export type PublicAgentRun = {
   requestedModel: string;
   models: string[];
@@ -20,7 +27,7 @@ export type PublicAgentRun = {
   finalText: string;
   draft: PublicAgentDraft | null;
   validation: {
-    article: { ok: true } | { ok: false; error: string } | null;
+    article: { ok: true } | { ok: false; error: string; issues?: PublicValidationIssue[] } | null;
     images: { ok: true } | { ok: false; message: string } | null;
   };
   persistence: { persisted: boolean; message: string; uncertain: boolean };
@@ -34,7 +41,7 @@ export type LabExecution =
   | { phase: "uncertain"; message: string }
   | { phase: "incomplete"; reason: string; persistence: string }
   | { phase: "validation"; message: string; modelFinished: boolean; persistence: string }
-  | { phase: "finished"; modelFinished: boolean; persisted: boolean; persistence: string };
+  | { phase: "finished"; modelFinished: boolean; persisted: boolean; persistence: string; validation: "passed" | "skipped" };
 
 export function persistenceIsUncertain(message: string): boolean {
   return /may or may not|may remain/i.test(message);
@@ -57,18 +64,11 @@ export function executionFromRun(run: PublicAgentRun): LabExecution {
       persistence: run.persistence.message,
     };
   }
-  if (run.validation.article && !run.validation.article.ok) {
+  const failure = validationFailureDetail(run.validation.article, run.validation.images);
+  if (failure) {
     return {
       phase: "validation",
-      message: run.validation.article.error,
-      modelFinished: true,
-      persistence: run.persistence.message,
-    };
-  }
-  if (run.validation.images && !run.validation.images.ok) {
-    return {
-      phase: "validation",
-      message: run.validation.images.message,
+      message: failure,
       modelFinished: true,
       persistence: run.persistence.message,
     };
@@ -78,9 +78,46 @@ export function executionFromRun(run: PublicAgentRun): LabExecution {
     modelFinished: true,
     persisted: run.persistence.persisted,
     persistence: run.persistence.message,
+    validation: run.validation.article == null ? "skipped" : "passed",
   };
 }
 
 export function submissionInProgress(phase: LabExecution["phase"]): boolean {
   return phase === "running";
+}
+
+export function validationProgressMessage(article: unknown, images?: unknown): string {
+  if (article == null) return "Validation skipped — no draft created";
+  const failure = validationFailureDetail(article, images);
+  return failure ? `Validation failed: ${failure}` : "Validation passed.";
+}
+
+function validationFailureDetail(article: unknown, images: unknown): string | null {
+  const parts: string[] = [];
+  const articleMessage = articleFailure(article);
+  if (articleMessage) parts.push(articleMessage);
+  const imageMessage = imageFailure(images);
+  if (imageMessage) parts.push(imageMessage);
+  return parts.length > 0 ? parts.join(" ") : null;
+}
+
+function articleFailure(article: unknown): string | null {
+  if (!isRecord(article) || article.ok !== false) return null;
+  const issues = Array.isArray(article.issues)
+    ? article.issues.flatMap((issue) => {
+        if (!isRecord(issue) || typeof issue.message !== "string" || issue.message.trim() === "") return [];
+        return [issue.message];
+      })
+    : [];
+  if (issues.length > 0) return issues.join(" ");
+  return typeof article.error === "string" && article.error.trim() !== "" ? article.error : "Article failed validation.";
+}
+
+function imageFailure(images: unknown): string | null {
+  if (!isRecord(images) || images.ok !== false) return null;
+  return typeof images.message === "string" && images.message.trim() !== "" ? images.message : "Image validation failed.";
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
 }
