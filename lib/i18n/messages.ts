@@ -10,6 +10,7 @@ const messages = {
     experience: "Experience",
     certifications: "Certifications",
     contact: "Contact",
+    services: "Services",
     blog: "Blog",
     expertiseHeading: "Technical expertise",
     expertiseIntro: "The tools and platforms I use to build production web applications.",
@@ -43,6 +44,7 @@ const messages = {
     experience: "Esperienza",
     certifications: "Certificazioni",
     contact: "Contatto",
+    services: "Servizi",
     blog: "Blog",
     expertiseHeading: "Competenze tecniche",
     expertiseIntro: "Strumenti e piattaforme che uso per realizzare applicazioni web in produzione.",
@@ -76,6 +78,7 @@ const messages = {
     experience: "<ruby>経歴<rt>けいれき</rt></ruby>",
     certifications: "<ruby>資格<rt>しかく</rt></ruby>",
     contact: "<ruby>連絡先<rt>れんらくさき</rt></ruby>",
+    services: "サービス",
     blog: "ブログ",
     expertiseHeading: "<ruby>技術的<rt>ぎじゅつてき</rt></ruby>な<ruby>専門性<rt>せんもんせい</rt></ruby>",
     expertiseIntro:

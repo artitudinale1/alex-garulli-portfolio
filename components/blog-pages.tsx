@@ -13,6 +13,7 @@ function BlogHeader({ current }: { current: boolean }) {
         </Link>
         <nav aria-label="Site">
           <Link href="/">Portfolio</Link>
+          <Link href="/services">Services</Link>
           <Link href="/blog" aria-current={current ? "page" : undefined}>
             Blog
           </Link>
