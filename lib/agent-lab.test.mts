@@ -109,6 +109,7 @@ describe("agent execution states", () => {
       modelFinished: true,
       persisted: false,
       persistence: "Mock target kept the validated draft in memory.",
+      validation: "passed",
     });
 
     const stored = executionFromRun(
@@ -125,9 +126,31 @@ describe("agent execution states", () => {
     assert.equal(incomplete.phase, "incomplete");
 
     const invalid = executionFromRun(
-      finishedRun({ validation: { article: { ok: false, error: "The article is too long." }, images: null } }),
+      finishedRun({
+        validation: {
+          article: {
+            ok: false,
+            error: "Article failed validation.",
+            issues: [
+              {
+                code: "excerpt_too_long",
+                message: "Summary has 301 characters, which exceeds the excerpt maximum of 300.",
+                length: 301,
+                maxLength: 300,
+              },
+            ],
+          },
+          images: null,
+        },
+      }),
     );
     assert.equal(invalid.phase, "validation");
+    if (invalid.phase === "validation") {
+      assert.equal(invalid.message, "Summary has 301 characters, which exceeds the excerpt maximum of 300.");
+    }
+    const skipped = executionFromRun(finishedRun({ validation: { article: null, images: null }, draft: null }));
+    assert.equal(skipped.phase, "finished");
+    if (skipped.phase === "finished") assert.equal(skipped.validation, "skipped");
 
     const uncertain = executionFromRun(
       finishedRun({
@@ -143,7 +166,25 @@ describe("agent execution states", () => {
     assert.equal(submissionInProgress("finished"), false);
     assert.equal(publicErrorMessage(new Error("rejected sk-test-secret")), "The run could not be completed.");
     assert.equal(validationProgressMessage(null), "Validation skipped — no draft created");
-    assert.equal(validationProgressMessage({ ok: false, error: "The article is too long." }), "Validation recorded.");
+    assert.equal(validationProgressMessage({ ok: true }), "Validation passed.");
+    assert.equal(
+      validationProgressMessage({ ok: false, error: "The article is too long." }),
+      "Validation failed: The article is too long.",
+    );
+    assert.equal(
+      validationProgressMessage(
+        {
+          ok: false,
+          error: "Article failed validation.",
+          issues: [
+            { message: "Title has 161 characters, which exceeds the maximum of 160." },
+            { message: "Summary has 301 characters, which exceeds the excerpt maximum of 300." },
+          ],
+        },
+        { ok: false, message: "Unsafe image URL." },
+      ),
+      "Validation failed: Title has 161 characters, which exceeds the maximum of 160. Summary has 301 characters, which exceeds the excerpt maximum of 300. Unsafe image URL.",
+    );
   });
 });
 
